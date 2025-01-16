@@ -46,13 +46,16 @@ The system comprises four specialized agents:
 
 ## Usage
 
-1. **Run the main script:**
+**Setup a k8s environment and run the main script:**
 
-    ```bash
-    python main.py
-    ```
+```bash
+kind create cluster
+istioctl install -y
 
-    This will start the multi-agent system and initiate a conversation based on the predefined `user_question` in `main.py`. The agents will collaborate to address the issue related to the Istio VirtualService configuration.
+python main.py
+```
+
+This will start the multi-agent system and initiate a conversation based on the predefined `user_question` in `main.py`. The agents will collaborate to address the issue related to the Istio VirtualService configuration.
 
 
 ## Notes
