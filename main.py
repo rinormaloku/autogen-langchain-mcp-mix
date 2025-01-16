@@ -11,7 +11,7 @@ from autogen_ext.tools.langchain import LangChainToolAdapter
 from dotenv import load_dotenv
 from lib.websearch import google_search
 
-from langchain_community.tools import ShellTool
+from langchain_community.tools import ShellTool, DuckDuckGoSearchResults
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(TRACE_LOGGER_NAME)
@@ -29,7 +29,8 @@ Your team members are:
     FixerAgent: Modifies or generates YAML based on gathered information
     RunnerAgent: Applies configurations to a terminal
 
-You only plan and delegate tasks - you do not execute them yourself.
+You only plan and delegate tasks. The WebSearchAgent should search for all the information needed so that the FixerAgent can 
+craft an API in yaml format that is ready to be applied by the RunnerAgent.
 
 When assigning tasks, use this format:
 1. <agent> : <task>
@@ -81,10 +82,11 @@ async def main():
         system_message=planning_agent_prompt,
     )
 
+    duckduckSearch = LangChainToolAdapter(DuckDuckGoSearchResults())
     web_search_agent = AssistantAgent(
         name="WebSearchAgent",
         description="A web search agent.",
-        tools=[google_search],
+        tools=[duckduckSearch],
         model_client=llm,
         system_message=web_search_agent_prompt,
     )
