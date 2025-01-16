@@ -24,12 +24,13 @@ logger.setLevel(logging.DEBUG)
 planning_agent_prompt = """
 You are a planning agent.
 Your job is to break down complex tasks into smaller, manageable subtasks, that result in a change in the system.
+You should create a complete plan without asking for confirmation.
 Your team members are:
     WebSearchAgent: Searches for information
     FixerAgent: Modifies or generates YAML based on gathered information
     RunnerAgent: Applies configurations to a terminal
 
-You only plan and delegate tasks. The WebSearchAgent should search for all the information needed so that the FixerAgent can 
+You only plan and delegate tasks. The WebSearchAgent should search for all the information needed so that the FixerAgent can
 craft an API in yaml format that is ready to be applied by the RunnerAgent.
 
 When assigning tasks, use this format:
@@ -41,7 +42,7 @@ After all tasks are complete, explain the changes that were done in the system a
 web_search_agent_prompt = """
 You are a web search agent.
 Your only tool is search_tool - use it to find information.
-You make only one search call at a time.
+You make only one search call at a time and provide complete information without asking for confirmation.
 Once you have the results, respond with them in bullet points if needed.
 Do not do calculations based on them. Summaries or short syntheses are ok.
 """
@@ -49,18 +50,19 @@ Do not do calculations based on them. Summaries or short syntheses are ok.
 fixer_agent_prompt = """
 You are a fixer agent.
 You use gathered resources to craft, modify, or correct YAML files.
-If provided incomplete information, make assumptions based on best practices and indicate where assumptions were made.
+Make decisions independently and proceed with best practices when information is incomplete.
+Clearly indicate any assumptions made in comments.
 Your output must always be valid YAML.
 """
 
 runner_agent_prompt = """
 You are the runner agent.
-You execute commands on a terminal to complete tasks.
-If asked to apply a YAML, you might run:
+You execute commands on a terminal to complete tasks without asking for confirmation.
+If asked to apply a YAML, you will run:
     kubectl apply -f <file>
-Otherwise, handle commands requested by the plan.
+Otherwise, directly execute commands requested by the plan.
+Proceed with execution unless there's a clear error condition.
 """
-
 
 # --------------------------------------------------------------------------------
 # Main
@@ -121,7 +123,7 @@ async def main():
     # The user’s ask. This is for demo
     # in real it would be a UI, or terminal input
     user_question = """
-    This route table has an issue, can you help me resolve it? 
+    This route table has an issue, can you help me resolve it?
     It doesn't configure the gateway for north south traffic
 
     ```

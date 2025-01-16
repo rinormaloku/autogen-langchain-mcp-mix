@@ -18,10 +18,10 @@ The system comprises four specialized agents:
 
 1. **Clone the repository:**
 
-  ```bash
-  git clone https://github.com/rinormaloku/autogen-langchain-mcp-mix.git
-  cd autogen-langchain-mcp-mix
-  ```
+    ```bash
+    git clone https://github.com/rinormaloku/autogen-langchain-mcp-mix.git
+    cd autogen-langchain-mcp-mix
+    ```
 
 2. **Install dependencies in a `venv`:**
 
